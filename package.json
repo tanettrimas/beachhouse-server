@@ -1,0 +1,23 @@
+{
+  "name": "beachhouse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "Tanet Trimas <tanet@trimas.no>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2"
+  }
+}
