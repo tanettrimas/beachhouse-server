@@ -1,8 +1,9 @@
-function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, calculatePriceTax, ValidationService, createValidationError }) {
-  return function createMenuItem({ title, category, price, allergies, menuNumber } = {}) {
+function makeCreateMenuItem({ crypto, listAllergies, calculatePriceTax, ValidationService, createValidationError, isValidId }) {
+  return function createMenuItem({ title, category, price, allergies, menuNumber, id } = {}) {
     const REQUIRED_LENGTH_PROPERTY = 3
     let result = {}
     let errorArray = []
+    let resultToHash
 
     if(!ValidationService.isValidString(title, REQUIRED_LENGTH_PROPERTY)) {
       errorArray = createValidationError({ errorArray, property: 'title' })
@@ -32,13 +33,18 @@ function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, cal
       errorArray = createValidationError({ errorArray, property: 'category' })
     }
 
+    if(ValidationService.isValidString(id) && isValidId(id)) {
+      result.id = id
+    }
+
     // If it exist errorArray
     if(errorArray.length) {
       result.errors = errorArray
       return result
     }
-  
+    
     result = {
+      ...result,
       title,
       number: menuNumber,
       category,
@@ -46,20 +52,29 @@ function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, cal
         takeAway: calculatePriceTax(price, 1.15),
         sitHere: calculatePriceTax(price, 1.25)
       }),
-      allergies: Object.freeze(allergies.map(allergy => {
-        return getAllergyByCodeOrName(allergy)
-      }))
+      allergies: Object.freeze(allergies)
     }
 
-    const hash = crypto.createHash('md5').update(JSON.stringify(result)).digest('hex')
-  
+    // For PUT requests, not hashing with the id
+    if(result.id) {
+      const { id, ...rest} = result
+      resultToHash = {
+        ...rest
+      }
+    } else {
+      resultToHash = {
+        ...result
+      }
+    }
+    const hash = crypto.createHash('md5').update(JSON.stringify(resultToHash)).digest('hex')
     return Object.freeze({
       getTitle: () => result.title,
       getCategory: () => result.category,
       getPrice: () => result.price,
       getAllergies: () => result.allergies,
       getHash: () => hash,
-      getNumber: () => result.number
+      getNumber: () => result.number,
+      getId: () => result.id
     })
   } 
 }

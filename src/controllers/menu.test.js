@@ -35,14 +35,11 @@ describe('menuController.addMenuItem', () => {
     expect(items.length).toBe(1)
     expect(menuItem).toEqual({
       title: 'my test item',
-      hash: 'ab7efe9b0035b74d15f6be76df410980',
+      hash: 'b1376ebfc64f6ec7c0e1248512e83de0',
       number: 1,
       price: { takeAway: 182.85, sitHere: 198.75 },
       category: 'sushi',
-      allergies: [
-        { code: 'MU', nameNO: 'sennep', nameEN: 'mustard' },
-        { code: 'F', nameNO: 'fisk', nameEN: 'fish' }
-      ]
+      allergies: [ 'MU', 'F' ]
     })
   })
 })

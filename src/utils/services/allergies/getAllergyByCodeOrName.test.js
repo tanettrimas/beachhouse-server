@@ -21,8 +21,9 @@ describe('getAllergyByCodeOrName', () => {
     expect(allergy).toHaveProperty('code')
   })
 
-  it('returns undefined if not found', () => {
-    const allergy = getAllergyByCodeOrName('somethingnotexistent')
-    expect(allergy).toBeUndefined()
+  it('throws if not found', () => {
+    expect(() => {
+      getAllergyByCodeOrName('somethingnotexistent').toThrow()
+    })
   })
 })

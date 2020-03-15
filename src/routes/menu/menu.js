@@ -27,6 +27,7 @@ router.post('/new', async (req, res, next) => {
       const item = await menuController.addMenuItem(req.body)
       // Sending the error array to the error-handler
       if(item.errors) {
+        res.status(422)
         throw item.errors
       }
 
@@ -42,9 +43,37 @@ router.post('/new', async (req, res, next) => {
         ...item
       })
     } catch (error) {
-      res.status(422)
       next(error)
     }
+})
+
+router.put('/:id', async (req, res, next) => {
+  try {
+    const item = await menuController.updateMenuItem({
+      id: req.params.id,
+      ...req.body
+    })
+
+    if(typeof item === 'undefined') {
+      res.status(404)
+      throw new RangeError('Item not found')
+    }
+
+    if(item === null) {
+      return res.sendStatus(204)
+    }
+
+    if(item && item.errors) {
+      res.status(400)
+      throw item.errors
+    }
+
+    res.status(200).send({
+      ...item
+    })
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = router

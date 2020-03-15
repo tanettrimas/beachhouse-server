@@ -1,6 +1,6 @@
-const makeDb = require('../db/connect')
+const { makeDb, objectId} = require('../db/connect')
 
-const makeCreateDatabaseController = (db) => (tableName) => {
+const makeCreateDatabaseController = ({ db, objectId}) => (tableName) => {
   return {
     add,
     list,
@@ -30,7 +30,7 @@ const makeCreateDatabaseController = (db) => (tableName) => {
       const [{ _id: id, ...rest }] = dbInsertResult.ops
       return { id, ...rest }
     } catch (error) {
-      console.log(error)
+      throw error
     }
     
   }
@@ -42,9 +42,21 @@ const makeCreateDatabaseController = (db) => (tableName) => {
   } 
   //TODO: implement
   async function remove(item) {}
-  async function update(item) {}
+
+  async function update({ id: _id, ...rest }) {
+    try {
+      const database = await db()
+      const result = await database
+        .collection(tableName)
+        .updateOne({ "_id": new objectId(_id)}, { $set: rest })
+      return result.modifiedCount > 0 ? { id: _id, ...rest} : null
+    } catch (error) {
+      throw error
+    }
+    
+  }
 }
 
-const createDatabaseController = makeCreateDatabaseController(makeDb)
+const createDatabaseController = makeCreateDatabaseController({ db: makeDb, objectId})
 
 module.exports = createDatabaseController

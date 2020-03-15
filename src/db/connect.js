@@ -1,5 +1,6 @@
 const mongodb = require('mongodb')
 
+
 const MongoClient = mongodb.MongoClient
 
 const url = `mongodb+srv://${process.env.DB_USR}:${process.env.DB_PASS}@cluster0-j64c1.mongodb.net/test?retryWrites=true&w=majority`
@@ -18,4 +19,4 @@ async function makeDb () {
   } 
 }
 
-module.exports = makeDb
+module.exports = { makeDb, objectId: mongodb.ObjectID}

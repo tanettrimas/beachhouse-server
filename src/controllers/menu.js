@@ -33,9 +33,39 @@ const createMenuController = ({ databaseController }) => {
     return databaseController.list()
   }
 
+  async function updateMenuItem(menuInfo) {
+    const menuItem = createMenuItem(menuInfo)
+
+    if(menuItem.errors) {
+      return menuItem
+    }
+
+    if(!menuItem.getId()) {
+      console.log('reached')
+      return
+    }
+
+    const menuItemToUpdate = Object.freeze({
+      id: menuItem.getId(),
+      title: menuItem.getTitle(),
+      number: menuItem.getNumber(),
+      price: menuItem.getPrice(),
+      category: menuItem.getCategory(),
+      allergies: menuItem.getAllergies(),
+      hash: menuItem.getHash()
+    })
+
+    return databaseController.update(menuItemToUpdate)
+  }
+
+  //TODO
+  async function deleteMenuItem(menuInfo) {}
+
   return {
     addMenuItem,
-    listMenuItems
+    listMenuItems,
+    updateMenuItem,
+    deleteMenuItem
   }
 }
 
