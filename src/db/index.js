@@ -19,7 +19,7 @@ const makeCreateDatabaseController = (db) => (tableName) => {
       const {_id: id, ...existingInfo } = result['0']
       return { id, ...existingInfo }
     } catch (error) {
-      console.log(error)
+      throw error
     }
   }
 

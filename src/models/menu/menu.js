@@ -1,13 +1,14 @@
 const ValidationError = require('../../utils/ValidationError')
 
-function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, calculatePriceTax }) {
+function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, calculatePriceTax }) {
   return function createMenuItem({ title, category, price, allergies, menuNumber } = {}) {
     const REQUIRED_LENGTH_PROPERTY = 3
-
+    const VALID_ALLERGY_CODES = listAllergies().map(item => item.code)
+    const onlyValidAllergies = allergies.every(item => VALID_ALLERGY_CODES.includes(item))
     let result = {}
     let errors = []
 
-    if(!title || title.trim().length < REQUIRED_LENGTH_PROPERTY || typeof title !== 'string') {
+    if(!title || typeof title !== 'string' || title.trim().length < REQUIRED_LENGTH_PROPERTY || typeof title !== 'string') {
       errors.push({
         message: new ValidationError().message,
         property: 'title'
@@ -17,6 +18,13 @@ function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, calculatePriceTax 
     if(!allergies || !allergies.length) {
       errors.push({
         message: new ValidationError().message,
+        property: 'allergies'
+      })
+    }
+
+    if(!onlyValidAllergies) {
+      errors.push({
+        message: new Error('Property includes invalid arguments, check the /allergies for valid arguments').message,
         property: 'allergies'
       })
     }
@@ -35,7 +43,7 @@ function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, calculatePriceTax 
       })
     }
   
-    if(!category || category.trim().length < REQUIRED_LENGTH_PROPERTY || typeof category !== 'string') {
+    if(!category || typeof category !== 'string' || category.trim().length < REQUIRED_LENGTH_PROPERTY) {
       errors.push({
         message: new ValidationError().message,
         property: 'category'

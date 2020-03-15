@@ -1,9 +1,9 @@
 const crypto = require('crypto')
 
 const calculatePriceTax = require('../../utils/calculatePriceTax')
-const { getAllergyByCodeOrName } = require('../../utils/allergies')
+const { getAllergyByCodeOrName, listAllergies } = require('../../utils/allergies')
 const makeCreateMenuItem = require('./menu')
 
-const createMenuItem = makeCreateMenuItem({ calculatePriceTax, getAllergyByCodeOrName, crypto})
+const createMenuItem = makeCreateMenuItem({ calculatePriceTax, getAllergyByCodeOrName, listAllergies, crypto})
 
 module.exports = createMenuItem
