@@ -1,57 +1,45 @@
-const ValidationError = require('../../utils/ValidationError')
+const { createValidationError } = require('../../utils/errors/ValidationError')
+const ValidationService = require('../../utils/validation')
 
 function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, calculatePriceTax }) {
   return function createMenuItem({ title, category, price, allergies, menuNumber } = {}) {
     const REQUIRED_LENGTH_PROPERTY = 3
-    const VALID_ALLERGY_CODES = listAllergies().map(item => item.code)
-    const onlyValidAllergies = allergies.every(item => VALID_ALLERGY_CODES.includes(item))
     let result = {}
-    let errors = []
+    let errorArray = []
 
-    if(!title || typeof title !== 'string' || title.trim().length < REQUIRED_LENGTH_PROPERTY || typeof title !== 'string') {
-      errors.push({
-        message: new ValidationError().message,
-        property: 'title'
-      })
+    if(!ValidationService.isValidString(title, REQUIRED_LENGTH_PROPERTY)) {
+      errorArray = createValidationError({ errorArray, property: 'title' })
     }
   
-    if(!allergies || !allergies.length) {
-      errors.push({
-        message: new ValidationError().message,
-        property: 'allergies'
-      })
+    if(!ValidationService.isValidArray(allergies)) {
+      errorArray = createValidationError({ errorArray, property: 'allergies' })
+    } else {
+      // Check valid allergies
+      const VALID_ALLERGY_CODES = listAllergies().map(item => item.code)
+      const onlyValidAllergies = allergies.every(item => VALID_ALLERGY_CODES.includes(item))
+
+      if(!onlyValidAllergies) {
+        errorArray = createValidationError({ errorArray, error: new RangeError('Property includes invalid arguments, check the /allergies for valid arguments'), property: 'allergies' })
+      }
     }
 
-    if(!onlyValidAllergies) {
-      errors.push({
-        message: new Error('Property includes invalid arguments, check the /allergies for valid arguments').message,
-        property: 'allergies'
-      })
+    
+  
+    if(!ValidationService.isValidNumber(price)) {
+      errorArray = createValidationError({ errorArray, property: 'price' })
+    }
+
+    if(!ValidationService.isValidNumber(menuNumber)) {
+      errorArray = createValidationError({ errorArray, property: 'menuNumber' })
     }
   
-    if(!price || typeof price !== 'number') {
-      errors.push({
-        message: new ValidationError().message,
-        property: 'price'
-      })
+    if(!ValidationService.isValidString(category)) {
+      errorArray = createValidationError({ errorArray, property: 'category' })
     }
 
-    if(!menuNumber || typeof menuNumber !== 'number') {
-      errors.push({
-        message: new ValidationError().message,
-        property: 'menuNumber'
-      })
-    }
-  
-    if(!category || typeof category !== 'string' || category.trim().length < REQUIRED_LENGTH_PROPERTY) {
-      errors.push({
-        message: new ValidationError().message,
-        property: 'category'
-      })
-    }
-
-    if(errors.length) {
-      result.errors = errors
+    // If it exist errorArray
+    if(errorArray.length) {
+      result.errors = errorArray
       return result
     }
   

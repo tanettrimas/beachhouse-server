@@ -1,7 +1,6 @@
 const makeDb = require('./connect')
 
 const makeCreateDatabaseController = (db) => (tableName) => {
-  
   return {
     add,
     list,
@@ -9,10 +8,11 @@ const makeCreateDatabaseController = (db) => (tableName) => {
     update,
     findByHash
   }
-  async function findByHash({ getHash }) {
+
+  async function findByHash(item) {
     try {
       const database = await db()
-      const result = await database.collection(tableName).find({ hash: getHash() }).toArray()
+      const result = await database.collection(tableName).find({ hash: item.getHash() }).toArray()
       if(!result.length) {
         return null
       }
@@ -39,6 +39,7 @@ const makeCreateDatabaseController = (db) => (tableName) => {
     const database = await db()
     return database.collection(tableName).find({}).toArray()
   } 
+  //TODO: implement
   async function remove(item) {}
   async function update(item) {}
 }
