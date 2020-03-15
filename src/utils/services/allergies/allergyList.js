@@ -1,4 +1,4 @@
-const allergies = [
+module.exports = [
   { code: 'H', nameNO: 'hvete', nameEN: 'corn' },
   { code: 'SK', nameNO: 'skalldyr', nameEN: 'shellfish' },
   { code: 'E', nameNO: 'egg', nameEN: 'egg' },
@@ -18,18 +18,3 @@ const allergies = [
   { code: 'MO', nameNO: 'bløtdyr', nameEN: 'molluscs' },
   { code: 'L', nameNO: 'lupin', nameEN: 'lupin' }
 ]
-
-const getAllergyByCodeOrName = code => {
-  if(!code || typeof code !== 'string') {
-    throw new Error('Invalid or not existing property')
-  }
-
-  return allergies.find(item => item.code === code || item.nameNO === code)
-}
-
-const listAllergies = () => Object.freeze(allergies)
-
-module.exports = {
-  getAllergyByCodeOrName,
-  listAllergies
-}

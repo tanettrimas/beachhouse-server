@@ -1,4 +1,4 @@
-const makeDb = require('./connect')
+const makeDb = require('../db/connect')
 
 const makeCreateDatabaseController = (db) => (tableName) => {
   return {
@@ -37,7 +37,8 @@ const makeCreateDatabaseController = (db) => (tableName) => {
 
   async function list() {
     const database = await db()
-    return database.collection(tableName).find({}).toArray()
+    const listItems = await database.collection(tableName).find({}).toArray()
+    return listItems.map(({_id: id, ...rest}) => ({ id, ...rest}))
   } 
   //TODO: implement
   async function remove(item) {}

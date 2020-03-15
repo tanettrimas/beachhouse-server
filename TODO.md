@@ -17,6 +17,7 @@
     [x] Create new menu item
     [] Delete menu item(s)
     [] Change menu item
+    [] Dynamically add number from the last, doing it via middleware and checking only on post/put route in the DB
 
 [] Database
   [x] Mongo

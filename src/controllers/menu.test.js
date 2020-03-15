@@ -1,4 +1,4 @@
-const createMenuController = require('./menuController')
+const createMenuController = require('./menu')
 const mockDatabaseController = require('../mocks/DatabaseController')
 
 const menuController = createMenuController({ databaseController: mockDatabaseController })

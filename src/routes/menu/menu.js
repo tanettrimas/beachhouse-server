@@ -1,7 +1,7 @@
 const express = require('express')
 
-const createDatabaseController = require('../../db')
-const createMenuController = require('../../controllers/menuController')
+const createDatabaseController = require('../../controllers/database')
+const createMenuController = require('../../controllers/menu')
 
 const router = express.Router()
 
@@ -13,7 +13,8 @@ router.get("/", async (req, res, next) => {
     const items = await menuController.listMenuItems()
     res.send({
       message: 'Response successful!',
-      items
+      data: items,
+      length: items.length
     })
   } catch (error) {
     next(error)
@@ -24,6 +25,7 @@ router.post('/new', async (req, res, next) => {
     // post-endpoint
     try {
       const item = await menuController.addMenuItem(req.body)
+      // Sending the error array to the error-handler
       if(item.errors) {
         throw item.errors
       }

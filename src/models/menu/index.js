@@ -1,9 +1,10 @@
 const crypto = require('crypto')
-
+const { createValidationError } = require('../../utils/errors/ValidationError')
+const ValidationService = require('../../utils/services/validation')
 const calculatePriceTax = require('../../utils/calculatePriceTax')
-const { getAllergyByCodeOrName, listAllergies } = require('../../utils/allergies')
-const makeCreateMenuItem = require('./menu')
+const { getAllergyByCodeOrName, listAllergies } = require('../../utils/services/allergies')
 
-const createMenuItem = makeCreateMenuItem({ calculatePriceTax, getAllergyByCodeOrName, listAllergies, crypto})
+const makeCreateMenuItem = require('./menu')
+const createMenuItem = makeCreateMenuItem({ calculatePriceTax, getAllergyByCodeOrName, listAllergies, crypto, ValidationService, createValidationError})
 
 module.exports = createMenuItem

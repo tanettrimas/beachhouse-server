@@ -1,4 +1,4 @@
-const ValidationSerivce = require('../validation') 
+const ValidationSerivce = require('../services/validation') 
 
 class ValidationError extends Error {
   constructor() {
@@ -20,7 +20,7 @@ function createValidationError ({ errorArray, error = new ValidationError(), pro
     throw new Error(`Property property of value ${typeof property} needs to be a string`)
   }
 
-  return [...errorArray, { name: error.name, message: error.message, property }]
+  return Object.freeze([...errorArray, { name: error.name, message: error.message, property }])
 }
 
 module.exports = { ValidationError, createValidationError }

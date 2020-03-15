@@ -1,7 +1,4 @@
-const { createValidationError } = require('../../utils/errors/ValidationError')
-const ValidationService = require('../../utils/validation')
-
-function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, calculatePriceTax }) {
+function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, calculatePriceTax, ValidationService, createValidationError }) {
   return function createMenuItem({ title, category, price, allergies, menuNumber } = {}) {
     const REQUIRED_LENGTH_PROPERTY = 3
     let result = {}
@@ -23,8 +20,6 @@ function makeCreateMenuItem({ crypto, getAllergyByCodeOrName, listAllergies, cal
       }
     }
 
-    
-  
     if(!ValidationService.isValidNumber(price)) {
       errorArray = createValidationError({ errorArray, property: 'price' })
     }

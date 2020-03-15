@@ -1,4 +1,4 @@
-const { getAllergyByCodeOrName } = require('./allergies')
+const { getAllergyByCodeOrName } = require('./index')
 
 describe('getAllergyByCodeOrName', () => {
   it('needs param to be a string', () => {
