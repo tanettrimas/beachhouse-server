@@ -1,7 +1,7 @@
 ## Spec
 
 [] Tests
-  [] Initial tests/happy path 
+  [x] Initial tests/happy path 
 
 [] Index page 
   [] Header (menu, booking, contact, about, )
@@ -13,17 +13,26 @@
 
 [] MenuRoute
   [] Locked behind authorization
-    [] List menu items
+    [x] List menu items
     [x] Create new menu item
     [] Delete menu item(s)
     [] Change menu item
 
 [] Database
-  [] Mongo/Postgres?
+  [x] Mongo
+  [] Implement connection pooling
+
+[] Security
+  [] Implement helmet
+  [] XSS
+  [] CSRF
+  [] Express-validator
+  [] Object-prop manipulation
 
 [] CI/CD
   [] Travis/CircleCI
   [] Git Hooks on push/commit/pr
+  [] Snyk
 
 [] Deploy
   [] Heroku/Digital Ocean/Now
