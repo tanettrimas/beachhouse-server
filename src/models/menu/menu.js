@@ -1,5 +1,5 @@
 function makeCreateMenuItem({ crypto, listAllergies, calculatePriceTax, ValidationService, createValidationError, isValidId }) {
-  return function createMenuItem({ title, category, price, allergies, menuNumber, id } = {}) {
+  return function createMenuItem({ title, category, price, allergies, number, id } = {}) {
     const REQUIRED_LENGTH_PROPERTY = 3
     let result = {}
     let errorArray = []
@@ -25,14 +25,13 @@ function makeCreateMenuItem({ crypto, listAllergies, calculatePriceTax, Validati
       errorArray = createValidationError({ errorArray, property: 'price' })
     }
 
-    if(!ValidationService.isValidNumber(menuNumber)) {
-      errorArray = createValidationError({ errorArray, property: 'menuNumber' })
+    if(!ValidationService.isValidNumber(number)) {
+      errorArray = createValidationError({ errorArray, property: 'number' })
     }
   
     if(!ValidationService.isValidString(category)) {
       errorArray = createValidationError({ errorArray, property: 'category' })
     }
-
     if(ValidationService.isValidString(id) && isValidId(id)) {
       result.id = id
     }
@@ -41,14 +40,15 @@ function makeCreateMenuItem({ crypto, listAllergies, calculatePriceTax, Validati
     if(errorArray.length) {
       result.errors = errorArray
       return result
-    }
+    }    
     
     result = {
       ...result,
       title,
-      number: menuNumber,
+      number,
       category,
       price: Object.freeze({
+        initialPrice: price,
         takeAway: calculatePriceTax(price, 1.15),
         sitHere: calculatePriceTax(price, 1.25)
       }),

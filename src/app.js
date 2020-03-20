@@ -21,6 +21,7 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   // TODO: Add logging to data pool?
   res.status(res.statusCode === 200 ? 500 : res.statusCode)
+  console.log(err.stack)
   res.send({
     status: res.statusCode,
     error: err.length ? err : err.message

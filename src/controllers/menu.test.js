@@ -27,25 +27,20 @@ describe('menuController.addMenuItem', () => {
       category: 'sushi',
       price: 159,
       title: 'my test item',
-      menuNumber: 1
+      number: 1
     })
-
-    const items = await menuController.listMenuItems()
-    
-    expect(items.length).toBe(1)
     expect(menuItem).toEqual({
       title: 'my test item',
-      hash: 'b1376ebfc64f6ec7c0e1248512e83de0',
+      hash: '88014046d9f5658f5135950f2eacabc9',
       number: 1,
-      price: { takeAway: 182.85, sitHere: 198.75 },
+      price: { initialPrice: 159, takeAway: 182.85, sitHere: 198.75 },
       category: 'sushi',
       allergies: [ 'MU', 'F' ]
     })
+    const items = await menuController.listMenuItems()
+    expect(items.length).toBe(1)
   })
 })
-
-  
-
 
 
 

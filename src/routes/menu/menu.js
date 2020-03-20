@@ -22,10 +22,8 @@ router.get("/", async (req, res, next) => {
 })
 
 router.post('/new', async (req, res, next) => {
-    // post-endpoint
     try {
       const item = await menuController.addMenuItem(req.body)
-      // Sending the error array to the error-handler
       if(item.errors) {
         res.status(422)
         throw item.errors
@@ -47,31 +45,36 @@ router.post('/new', async (req, res, next) => {
     }
 })
 
+
 router.put('/:id', async (req, res, next) => {
   try {
-    const item = await menuController.updateMenuItem({
-      id: req.params.id,
-      ...req.body
-    })
-
-    if(typeof item === 'undefined') {
-      res.status(404)
-      throw new RangeError('Item not found')
-    }
+    const item = await menuController.updateMenuItem(req.params.id, req.body)
 
     if(item === null) {
       return res.sendStatus(204)
     }
 
-    if(item && item.errors) {
-      res.status(400)
-      throw item.errors
-    }
-
-    res.status(200).send({
-      ...item
-    })
+    res.send({ message: "Resource updated", data: item})
   } catch (error) {
+    if(error.message === "Item not found") {
+      res.status(404)
+    } else {
+      res.status(422)
+    }
+    next(error)
+  }
+})
+
+router.get('/:id', async (req, res, next) => {
+  try {
+    const item = await menuController.getItemById(req.params.id)
+    res.send({ data: item })
+  } catch (error) {
+    if(error.message === "Item not found") {
+      res.status(404)
+    } else {
+      res.status(422)
+    }
     next(error)
   }
 })

@@ -1,12 +1,30 @@
 const { makeDb, objectId} = require('../db/connect')
+const isValidId = require('../utils/isValidId')
 
-const makeCreateDatabaseController = ({ db, objectId}) => (tableName) => {
+const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   return {
     add,
     list,
     remove,
     update,
-    findByHash
+    findByHash,
+    findById
+  }
+
+  async function findById(id) {
+    const database = await db()
+    if(!isValidId(id)) {
+      throw new Error('Invalid id')
+    }
+
+    const item = await database.collection(tableName).findOne({ _id: new objectId(id)})
+
+    if(!item) {
+      throw new Error("Item not found")
+    }
+    
+    const { _id, ...rest} = item
+    return Object.freeze({ id: `${_id}`, ...rest})
   }
 
   async function findByHash(item) {
@@ -17,7 +35,7 @@ const makeCreateDatabaseController = ({ db, objectId}) => (tableName) => {
         return null
       }
       const {_id: id, ...existingInfo } = result['0']
-      return { id, ...existingInfo }
+      return Object.freeze({ id, ...existingInfo })
     } catch (error) {
       throw error
     }
@@ -28,7 +46,7 @@ const makeCreateDatabaseController = ({ db, objectId}) => (tableName) => {
       const database = await db()
       const dbInsertResult = await database.collection(tableName).insertOne({ ...item })
       const [{ _id: id, ...rest }] = dbInsertResult.ops
-      return { id, ...rest }
+      return Object.freeze({ id, ...rest })
     } catch (error) {
       throw error
     }
@@ -38,18 +56,18 @@ const makeCreateDatabaseController = ({ db, objectId}) => (tableName) => {
   async function list() {
     const database = await db()
     const listItems = await database.collection(tableName).find({}).toArray()
-    return listItems.map(({_id: id, ...rest}) => ({ id, ...rest}))
+    return listItems.map(({_id: id, ...rest}) => (Object.freeze({ id, ...rest})))
   } 
   //TODO: implement
   async function remove(item) {}
 
-  async function update({ id: _id, ...rest }) {
+  async function update({ id, ...rest }) {
     try {
       const database = await db()
       const result = await database
         .collection(tableName)
-        .updateOne({ "_id": new objectId(_id)}, { $set: rest })
-      return result.modifiedCount > 0 ? { id: _id, ...rest} : null
+        .updateOne({ _id: new objectId(id)}, { $set: rest })
+      return result.modifiedCount > 0 ? Object.freeze({ id, ...rest}) : null
     } catch (error) {
       throw error
     }
