@@ -13,16 +13,12 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
 
   async function findById(id) {
     const database = await db()
-    if(!isValidId(id)) {
-      throw new Error('Invalid id')
-    }
-
     const item = await database.collection(tableName).findOne({ _id: new objectId(id)})
 
     if(!item) {
       throw new Error("Item not found")
     }
-    
+
     const { _id, ...rest} = item
     return Object.freeze({ id: `${_id}`, ...rest})
   }
@@ -59,7 +55,11 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     return listItems.map(({_id: id, ...rest}) => (Object.freeze({ id, ...rest})))
   } 
   //TODO: implement
-  async function remove(item) {}
+  async function remove(id) {
+    const database = await db()
+    const result = await database.collection(tableName).deleteOne({ _id: new objectId(id) }, { justOne: true })
+    return result.deletedCount > 0 ? true : false
+  }
 
   async function update({ id, ...rest }) {
     try {

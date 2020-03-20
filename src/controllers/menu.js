@@ -1,4 +1,5 @@
 const createMenuItem = require('../models/menu')
+const isValidId = require('../utils/isValidId')
 
 const createMenuController = ({ databaseController }) => {
   async function addMenuItem (menuInfo) {
@@ -26,6 +27,10 @@ const createMenuController = ({ databaseController }) => {
   }
 
   async function updateMenuItem(id, body) {
+    if(!isValidId(id)) {
+      throw new Error('Invalid id')
+    }
+
     const item = await databaseController.findById(id)
     if(!item) {
       throw new Error('Item not found')
@@ -47,12 +52,23 @@ const createMenuController = ({ databaseController }) => {
   }
 
   async function getItemById(id) {
+    if(!isValidId(id)) {
+      throw new Error('Invalid id')
+    }
+
     const item = await databaseController.findById(id)
     return item
   }
 
   //TODO
-  async function deleteMenuItem(menuInfo) {}
+  async function deleteMenuItem(id) {
+    if(!isValidId(id)) {
+      throw new Error('Invalid id')
+    }
+    const item = await databaseController.findById(id)
+    const deleted = await databaseController.remove(item.id)
+    return deleted 
+  }
 
   return {
     addMenuItem,

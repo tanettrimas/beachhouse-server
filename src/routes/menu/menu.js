@@ -80,4 +80,18 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const deleted = await menuController.deleteMenuItem(req.params.id)
+    if(deleted) {
+      res.sendStatus(204)
+    } else {
+      throw new Error("Something went wrong during delete")
+    }
+  } catch (error) {
+    res.status(422)
+    next(error)
+  }
+})
+
 module.exports = router
