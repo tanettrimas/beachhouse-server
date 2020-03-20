@@ -11,9 +11,10 @@ const menuController = createMenuController({ databaseController })
 router.get("/", async (req, res, next) => {
   try {
     const items = await menuController.listMenuItems()
+    const returnItems = items.map(item => ({...item, url: `/menu/${item.id}`}))
     res.send({
       message: 'Response successful!',
-      data: items,
+      data: returnItems,
       length: items.length
     })
   } catch (error) {
