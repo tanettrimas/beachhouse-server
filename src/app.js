@@ -1,10 +1,13 @@
 const express = require('express')
 const logger = require('morgan')
+const helmet = require('helmet')
+
 const app = express()
 
 const menuRouter = require('./routes/menu')
 const allergyRouter = require('./routes/allergies')
 
+app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
