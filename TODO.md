@@ -15,9 +15,8 @@
   [] Locked behind authorization
     [x] List menu items
     [x] Create new menu item
-    [] Delete menu item(s)
-    [] Change menu item
-    [] Dynamically add number from the last, doing it via middleware and checking only on post/put route in the DB
+    [x] Delete menu item(s)
+    [x] Change menu item
 
 [] Database
   [x] Mongo
