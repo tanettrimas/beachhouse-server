@@ -18,7 +18,11 @@ const createMenuController = ({ databaseController }) => {
         })
       }
       const menuItemToInsert = Object.freeze(getValues(menuItem))
-      return await databaseController.add(menuItemToInsert)
+
+      return await databaseController.add({ 
+        ...menuItemToInsert,
+        hash: menuItem.getHash()
+      })
   } 
     
 
@@ -42,12 +46,12 @@ const createMenuController = ({ databaseController }) => {
       return menuItem
     }
     // Running it through the validation again if the body has invalid parameters
-    const itemNew = constructMenuItem(menuItem, body)
+    const itemNew = constructMenuItemForUpdate(menuItem, body)
     const toUpdate = createMenuItem(itemNew)
     if(toUpdate.errors) {
       return toUpdate
     }
-    const updated = await databaseController.update({ id: menuId, ...getValues(toUpdate)})
+    const updated = await databaseController.update({ id: menuId, hash: toUpdate.getHash(), ...getValues(toUpdate)})
     
     return updated
   }
@@ -82,7 +86,7 @@ const createMenuController = ({ databaseController }) => {
 
 module.exports = createMenuController
 
-function constructMenuItem(menuItem, body) {
+function constructMenuItemForUpdate(menuItem, body) {
   const menuObject = getValues(menuItem)
   const validKeys = Object.keys(menuObject)
 
@@ -111,7 +115,6 @@ function constructMenuItem(menuItem, body) {
 function getValues(menuItem) {
   return Object.freeze({
     title: menuItem.getTitle(),
-    hash: menuItem.getHash(),
     number: menuItem.getNumber(),
     price: menuItem.getPrice(),
     category: menuItem.getCategory(),

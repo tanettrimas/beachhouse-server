@@ -55,6 +55,11 @@ router.put('/:id', async (req, res, next) => {
       return res.sendStatus(204)
     }
 
+    if(item.errors) {
+      res.status(422)
+      throw item.errors
+    }
+
     res.send({ message: "Resource updated", data: item})
   } catch (error) {
     if(error.message === "Item not found") {
