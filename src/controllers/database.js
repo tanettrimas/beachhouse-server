@@ -1,5 +1,4 @@
 const { makeDb, objectId} = require('../db/connect')
-const isValidId = require('../utils/isValidId')
 
 const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   return {
@@ -54,7 +53,7 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     const listItems = await database.collection(tableName).find({}).toArray()
     return listItems.map(({_id: id, ...rest}) => (Object.freeze({ id, ...rest})))
   } 
-  //TODO: implement
+
   async function remove(id) {
     const database = await db()
     const result = await database.collection(tableName).deleteOne({ _id: new objectId(id) }, { justOne: true })
@@ -71,10 +70,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     } catch (error) {
       throw error
     }
-    
   }
 }
 
-const createDatabaseController = makeCreateDatabaseController({ db: makeDb, objectId})
+const createDatabaseController = makeCreateDatabaseController({ db: makeDb, objectId })
 
 module.exports = createDatabaseController

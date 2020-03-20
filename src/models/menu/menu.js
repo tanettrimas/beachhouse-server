@@ -32,11 +32,10 @@ function makeCreateMenuItem({ crypto, listAllergies, calculatePriceTax, Validati
     if(!ValidationService.isValidString(category)) {
       errorArray = createValidationError({ errorArray, property: 'category' })
     }
-    if(ValidationService.isValidString(id) && isValidId(id)) {
+    if(ValidationService.isValidString(id) && ValidationService.isValidId(id)) {
       result.id = id
     }
 
-    // If it exist errorArray
     if(errorArray.length) {
       result.errors = errorArray
       return result

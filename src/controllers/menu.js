@@ -1,5 +1,5 @@
 const createMenuItem = require('../models/menu')
-const isValidId = require('../utils/isValidId')
+const ValidationService = require('../utils/services/validation')
 
 const createMenuController = ({ databaseController }) => {
   async function addMenuItem (menuInfo) {
@@ -31,7 +31,7 @@ const createMenuController = ({ databaseController }) => {
   }
 
   async function updateMenuItem(id, body) {
-    if(!isValidId(id)) {
+    if(!ValidationService.isValidId(id)) {
       throw new Error('Invalid id')
     }
 
@@ -57,7 +57,7 @@ const createMenuController = ({ databaseController }) => {
   }
 
   async function getItemById(id) {
-    if(!isValidId(id)) {
+    if(!ValidationService.isValidId(id)) {
       throw new Error('Invalid id')
     }
 
