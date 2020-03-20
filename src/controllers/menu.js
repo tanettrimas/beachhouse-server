@@ -48,6 +48,7 @@ const createMenuController = ({ databaseController }) => {
       return toUpdate
     }
     const updated = await databaseController.update({ id: menuId, ...getValues(toUpdate)})
+    
     return updated
   }
 
@@ -91,15 +92,17 @@ function constructMenuItem(menuItem, body) {
     if (typeof menuObject.price === "object") {
       newBody = {
         ...menuObject,
+        price: Object.freeze(menuObject.price.initialPrice),
         ...body,
-        price: Object.freeze(menuObject.price.initialPrice)
       }
     } else {
       newBody = {
         ...menuObject,
         ...body
       }
+      console.log("reached")
     }
+    
     return Object.freeze(newBody)
   }
   throw new Error('The request contains invalid values')
