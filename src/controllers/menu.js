@@ -8,17 +8,14 @@ const createMenuController = ({ databaseController }) => {
       if(menuItem.errors) {
         return menuItem
       }
-      const existingItem = await databaseController.findByHash(menuItem)
-
-      if(existingItem) {
-        console.log('Item exists in db')
+      const existingMenuItem = await databaseController.findByHash(menuItem)
+      if(existingMenuItem) {
         return Object.freeze({
           exists: true,
-          ...existingItem
+          ...existingMenuItem
         })
       }
-      const menuItemToInsert = Object.freeze(getValues(menuItem))
-
+      const menuItemToInsert = getValues(menuItem)
       return await databaseController.add({ 
         ...menuItemToInsert,
         hash: menuItem.getHash()
@@ -27,7 +24,8 @@ const createMenuController = ({ databaseController }) => {
     
 
   async function listMenuItems() {
-    return databaseController.list()
+    const menuItems = await databaseController.list()
+    return menuItems
   }
 
   async function updateMenuItem(id, body) {
@@ -52,7 +50,6 @@ const createMenuController = ({ databaseController }) => {
       return toUpdate
     }
     const updated = await databaseController.update({ id: menuId, hash: toUpdate.getHash(), ...getValues(toUpdate)})
-    
     return updated
   }
 
@@ -104,7 +101,6 @@ function constructMenuItemForUpdate(menuItem, body) {
         ...menuObject,
         ...body
       }
-      console.log("reached")
     }
     
     return Object.freeze(newBody)

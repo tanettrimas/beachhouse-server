@@ -31,7 +31,6 @@ describe('menuController.addMenuItem', () => {
     })
     expect(menuItem).toEqual({
       title: 'my test item',
-      hash: '88014046d9f5658f5135950f2eacabc9',
       number: 1,
       price: { initialPrice: 159, takeAway: 182.85, sitHere: 198.75 },
       category: 'sushi',

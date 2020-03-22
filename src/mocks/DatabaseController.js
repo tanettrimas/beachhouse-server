@@ -4,6 +4,7 @@ module.exports = {
     if(!item) {
       throw new Error('No item was passed')
     }
+    delete item.hash
     this.database.push(item)
     return item
   },
@@ -27,6 +28,5 @@ module.exports = {
       return true
     }
     return false
-  },
-  findByHash(item) {}
+  }
 }

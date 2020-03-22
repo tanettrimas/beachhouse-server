@@ -19,6 +19,7 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     }
 
     const { _id, ...rest} = item
+    delete rest.hash
     return Object.freeze({ id: `${_id}`, ...rest})
   }
 
@@ -30,6 +31,7 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
         return null
       }
       const {_id: id, ...existingInfo } = result['0']
+      delete existingInfo.hash
       return Object.freeze({ id, ...existingInfo })
     } catch (error) {
       throw error
@@ -41,6 +43,7 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
       const database = await db()
       const dbInsertResult = await database.collection(tableName).insertOne({ ...item })
       const [{ _id: id, ...rest }] = dbInsertResult.ops
+      delete rest.hash
       return Object.freeze({ id, ...rest })
     } catch (error) {
       throw error
@@ -51,7 +54,10 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   async function list() {
     const database = await db()
     const listItems = await database.collection(tableName).find({}).toArray()
-    return listItems.map(({_id: id, ...rest}) => (Object.freeze({ id, ...rest})))
+    return listItems.map(({_id: id, ...rest}) => {
+      delete rest.hash
+      return Object.freeze({ id, ...rest})
+    })
   } 
 
   async function remove(id) {
@@ -66,7 +72,11 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
       const result = await database
         .collection(tableName)
         .updateOne({ _id: new objectId(id)}, { $set: rest })
-      return result.modifiedCount > 0 ? Object.freeze({ id, ...rest}) : null
+      if(result.modifiedCount > 0) {
+        delete rest.hash
+        return Object.freeze({ id, ...rest})
+      }
+      return null
     } catch (error) {
       throw error
     }
