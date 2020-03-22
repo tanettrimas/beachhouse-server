@@ -62,9 +62,8 @@ const createMenuController = ({ databaseController }) => {
     return item
   }
 
-  //TODO
   async function deleteMenuItem(id) {
-    if(!isValidId(id)) {
+    if(!ValidationService.isValidId(id)) {
       throw new Error('Invalid id')
     }
     const item = await databaseController.findById(id)
