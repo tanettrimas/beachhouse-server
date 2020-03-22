@@ -15,10 +15,10 @@ app.use(logger('dev'))
 app.use('/menu', menuRouter)
 app.use('/allergies', allergyRouter)
 
-app.use((req, res) => {
-    return res.status(404).send({
-    message: 'Sorry, could not find that route!'
-  })
+app.use((req, res, next) => {
+  const error = new Error('Route not found')
+  res.status(404)
+  next(error)
 })
 
 app.use((err, req, res, next) => {

@@ -32,6 +32,9 @@ router.get('/query', async (req, res, next) => {
     res.send(allergy)
 
   } catch (error) {
+    if(error instanceof RangeError) {
+      res.status(404)
+    }
     next(error)
   }
 })
