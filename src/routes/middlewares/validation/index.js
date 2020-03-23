@@ -1,6 +1,7 @@
 const { validationResult, buildCheckFunction } = require('express-validator')
 const makeStringValidate = require('./string-validate')
 const makeNumberValidate = require('./num-validate')
+const makeArrayValidate = require('./array-validate')
 const VALID_CHECK_FIELDS = ['body', 'cookies', 'headers', 'params', 'query']
 
 const validate = validations => {
@@ -25,7 +26,8 @@ const makeBuildValidator = (...checkFields) => {
 
 const createValidator = Object.freeze({
   makeStringValidate, 
-  makeNumberValidate
+  makeNumberValidate,
+  makeArrayValidate
 })
 
 module.exports = Object.freeze({ validate, makeBuildValidator, createValidator })

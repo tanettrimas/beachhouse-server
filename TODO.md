@@ -23,7 +23,7 @@
   [] Implement connection pooling
 
 [] Security
-  [] Implement helmet
+  [x] Implement helmet
   [] XSS
   [] CSRF
   [] Express-validator

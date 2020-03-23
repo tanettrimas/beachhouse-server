@@ -1,16 +1,16 @@
 const express = require('express')
-const { body } = require('express-validator')
 const router = express.Router()
 
-const createDatabaseController = require('../../controllers/database')
+const createController = require('../utils/setup')
 const createMenuController = require('../../controllers/menu')
 const { validate, makeBuildValidator, createValidator } = require('../middlewares/validation')
 
+// Setup
 const check = makeBuildValidator('body')
 const stringValidate = createValidator.makeStringValidate(check)
 const numberValidate = createValidator.makeNumberValidate(check)
-const databaseController = createDatabaseController('menu')
-const menuController = createMenuController({ databaseController })
+const arrayValidate = createValidator.makeArrayValidate(check)
+const menuController = createController('menu', createMenuController)
 
 router.get("/", async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ router.post('/new', validate([
   stringValidate({ field: 'category' }),
   numberValidate({ field: 'price', isFloat: true }),
   numberValidate({ field: 'number', isInt: true}),
-  body('allergies').isArray()
+  arrayValidate({ field: 'allergies'})
 ]), async (req, res, next) => {
     try {
       const item = await menuController.addMenuItem(req.body)
@@ -51,11 +51,11 @@ router.post('/new', validate([
 
 
 router.put('/:id', validate([
-  body('title').isLength({ min: 3 }).trim().escape().optional({ nullable: true, checkFalsy: true }),
-  body('category').isLength({ min: 3}).trim().escape().optional({ nullable: true, checkFalsy: true }),
-  body('price').isNumeric().toFloat().optional({ nullable: true, checkFalsy: true }),
-  body('number').isNumeric().toInt().optional({ nullable: true, checkFalsy: true }),
-  body('allergies').isArray().optional({ nullable: true, checkFalsy: true })
+  stringValidate({ field: 'title', minLength: 3, optional: true }),
+  stringValidate({ field: 'category', minLength: 3, optional: true }),
+  numberValidate({ field: 'price', isFloat: true, optional: true }),
+  numberValidate({ field: 'number', isInt: true, optional: true}),
+  arrayValidate({ field: 'allergies', optional: true})
 ]), async (req, res, next) => {
   console.log(req.body)
   try {

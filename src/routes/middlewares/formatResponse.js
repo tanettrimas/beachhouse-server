@@ -2,6 +2,7 @@
  * 
  * In order for this to work properly, you need to set 
  * res.responseValue = THE_VALUE_YOU_WANT_TO_SEND_BACK
+ * inside of the router
  * 
  * @param {*} req Express request handler
  * @param {*} res Express response handler
@@ -15,7 +16,6 @@ const formatResponse = (req, res, next) => {
     if(!res.responseValue) {
       throw new Error('Something went wrong processing the response!')
     }
-    res.set('x-request-id', req.requestId)
     res.send({
       requestId: req.requestId,
       status: res.statusCode,
