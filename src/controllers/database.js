@@ -7,7 +7,21 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     remove,
     update,
     findByHash,
-    findById
+    findById,
+    checkIfUserExists
+  }
+
+  async function checkIfUserExists(username) {
+    const database = await db()
+    const user = await database.collection(tableName).findOne({ username }) 
+    return user ? true : false
+    // if(user) {
+    //   return null
+    // }
+
+    // const { _id, ...rest} = user
+    // delete rest.password
+    // return Object.freeze({ id: `${_id}`, ...rest})
   }
 
   async function findById(id) {
@@ -19,7 +33,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     }
 
     const { _id, ...rest} = item
-    delete rest.hash
+    if (rest.hash) {
+      delete rest.hash
+    }
     return Object.freeze({ id: `${_id}`, ...rest})
   }
 
@@ -31,7 +47,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
         return null
       }
       const {_id: id, ...existingInfo } = result['0']
-      delete existingInfo.hash
+      if (existingInfo.hash) {
+        delete existingInfo.hash
+      }
       return Object.freeze({ id, ...existingInfo })
     } catch (error) {
       throw error
@@ -43,7 +61,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
       const database = await db()
       const dbInsertResult = await database.collection(tableName).insertOne({ ...item, createdAt: Date.now(), updatedAt: Date.now() })
       const [{ _id: id, ...rest }] = dbInsertResult.ops
-      delete rest.hash
+      if (rest.hash) {
+        delete rest.hash
+      }
       return Object.freeze({ id, ...rest })
     } catch (error) {
       throw error
@@ -55,7 +75,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
     const database = await db()
     const listItems = await database.collection(tableName).find({}).toArray()
     return listItems.map(({_id: id, ...rest}) => {
-      delete rest.hash
+      if (rest.hash) {
+        delete rest.hash
+      }
       return Object.freeze({ id, ...rest})
     })
   } 
@@ -75,7 +97,9 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
         .collection(tableName)
         .updateOne({ _id: new objectId(id)}, { $set: { ...rest, updatedAt: timestamp} })
       if(result.modifiedCount > 0) {
-        delete rest.hash
+        if (rest.hash) {
+          delete rest.hash
+        }
         return Object.freeze({ id, ...rest, updatedAt: timestamp})
       }
       return null

@@ -4,10 +4,11 @@ const helmet = require('helmet')
 const { v4: uuid} = require('uuid')
 
 const app = express()
+const formatResponse = require('./routes/middlewares/formatResponse')
 
 const menuRouter = require('./routes/menu')
 const allergyRouter = require('./routes/allergies')
-const formatResponse = require('./routes/middlewares/formatResponse')
+const usersRouter = require('./routes/users')
 
 app.use((req, res, next) => {
   req.requestId = uuid()
@@ -21,6 +22,8 @@ app.use(logger('dev'))
 
 app.use('/menu', menuRouter, formatResponse)
 app.use('/allergies', allergyRouter, formatResponse)
+app.use('/users', usersRouter, formatResponse)
+
 app.use((req, res, next) => {
   const error = new Error('Route not found')
   res.status(404)
@@ -32,6 +35,13 @@ app.use((err, req, res, next) => {
   res.status(res.statusCode === 200 ? 500 : res.statusCode)
   if(err instanceof SyntaxError) {
     res.status(400)
+  }
+
+  if (err instanceof TypeError) {
+    //Here you can log before showing generic error message to user
+    console.log(err)
+    res.status(500)
+    err = new Error('Unforseen error occurred')
   }
   res.send({
     method: req.method,

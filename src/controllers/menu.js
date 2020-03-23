@@ -1,7 +1,7 @@
 const createMenuItem = require('../models/menu')
 const ValidationService = require('../utils/services/validation')
 
-const createMenuController = ({ databaseController }) => {
+const createMenuController = ({ databaseController, deps = {} }) => {
   async function addMenuItem (menuInfo) {
       const menuItem = createMenuItem(menuInfo)
       

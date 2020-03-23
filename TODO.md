@@ -2,6 +2,8 @@
 
 [] Tests
   [x] Initial tests/happy path 
+  [] Create tests for db connection and database controller
+  [] Integration test
 
 [] Index page 
   [] Header (menu, booking, contact, about, )
@@ -21,6 +23,7 @@
 [] Database
   [x] Mongo
   [] Implement connection pooling
+  [] Add seeding script for admin user (development)
 
 [] Security
   [x] Implement helmet

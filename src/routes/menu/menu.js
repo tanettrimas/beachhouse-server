@@ -11,7 +11,6 @@ const stringValidate = createValidator.makeStringValidate(check)
 const numberValidate = createValidator.makeNumberValidate(check)
 const arrayValidate = createValidator.makeArrayValidate(check)
 const menuController = createController('menu', createMenuController)
-
 router.get("/", async (req, res, next) => {
   try {
     const items = await menuController.listMenuItems()
@@ -57,7 +56,6 @@ router.put('/:id', validate([
   numberValidate({ field: 'number', isInt: true, optional: true}),
   arrayValidate({ field: 'allergies', optional: true})
 ]), async (req, res, next) => {
-  console.log(req.body)
   try {
     const item = await menuController.updateMenuItem(req.params.id, req.body)
     if(item === null) {
@@ -98,7 +96,7 @@ router.delete('/:id', async (req, res, next) => {
   try {
     const deleted = await menuController.deleteMenuItem(req.params.id)
     if(deleted) {
-      res.responseValue = `Object ${req.params.id} was successfully deleted`
+      res.responseValue = `Resource ${req.params.id} was successfully deleted`
       next()
     } else {
       throw new Error("Something went wrong during delete")
