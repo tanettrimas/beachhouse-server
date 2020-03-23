@@ -41,7 +41,7 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   async function add(item) {
     try {
       const database = await db()
-      const dbInsertResult = await database.collection(tableName).insertOne({ ...item })
+      const dbInsertResult = await database.collection(tableName).insertOne({ ...item, createdAt: Date.now(), updatedAt: Date.now() })
       const [{ _id: id, ...rest }] = dbInsertResult.ops
       delete rest.hash
       return Object.freeze({ id, ...rest })
@@ -67,14 +67,16 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   }
 
   async function update({ id, ...rest }) {
+    
     try {
       const database = await db()
+      const timestamp = Date.now()
       const result = await database
         .collection(tableName)
-        .updateOne({ _id: new objectId(id)}, { $set: rest })
+        .updateOne({ _id: new objectId(id)}, { $set: { ...rest, updatedAt: timestamp} })
       if(result.modifiedCount > 0) {
         delete rest.hash
-        return Object.freeze({ id, ...rest})
+        return Object.freeze({ id, ...rest, updatedAt: timestamp})
       }
       return null
     } catch (error) {
