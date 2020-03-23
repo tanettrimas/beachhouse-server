@@ -15,17 +15,21 @@ const createMenuController = ({ databaseController, deps = {} }) => {
           ...existingMenuItem
         })
       }
-      const menuItemToInsert = getValues(menuItem)
-      return await databaseController.add({ 
-        ...menuItemToInsert,
+      const insertedItem = await databaseController.add({ 
+        ...getValues(menuItem),
         hash: menuItem.getHash()
       })
+      return deletePropAndReturnModified('hash', insertedItem)
+
   } 
     
 
   async function listMenuItems() {
     const menuItems = await databaseController.list()
-    return menuItems
+    const returnItems = menuItems.map(({ id, hash, ...rest}) => {
+      return Object.freeze({ id, ...rest })
+    })
+    return returnItems
   }
 
   async function updateMenuItem(id, body) {
@@ -50,7 +54,7 @@ const createMenuController = ({ databaseController, deps = {} }) => {
       return toUpdate
     }
     const updated = await databaseController.update({ id: menuId, hash: toUpdate.getHash(), ...getValues(toUpdate)})
-    return updated
+    return deletePropAndReturnModified('hash', updated)
   }
 
   async function getItemById(id) {
@@ -59,7 +63,7 @@ const createMenuController = ({ databaseController, deps = {} }) => {
     }
 
     const item = await databaseController.findById(id)
-    return item
+    return deletePropAndReturnModified('hash', item)
   }
 
   async function deleteMenuItem(id) {
@@ -115,4 +119,15 @@ function getValues(menuItem) {
     category: menuItem.getCategory(),
     allergies: menuItem.getAllergies()
   })
+}
+
+function deletePropAndReturnModified(prop, obj = {}) {
+  const returnObject = {
+    ...obj
+  }
+  if(returnObject[prop]) {
+    delete returnObject[prop]
+    return returnObject
+  }
+  return false
 }
