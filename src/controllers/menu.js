@@ -1,5 +1,6 @@
 const createMenuItem = require('../models/menu')
 const ValidationService = require('../utils/services/validation')
+const deletePropAndReturnModified = require('../utils/deletePropReturnModifies')
 
 const createMenuController = ({ databaseController, deps = {} }) => {
   async function addMenuItem (menuInfo) {
@@ -119,15 +120,4 @@ function getValues(menuItem) {
     category: menuItem.getCategory(),
     allergies: menuItem.getAllergies()
   })
-}
-
-function deletePropAndReturnModified(prop, obj = {}) {
-  const returnObject = {
-    ...obj
-  }
-  if(returnObject[prop]) {
-    delete returnObject[prop]
-    return returnObject
-  }
-  return false
 }
