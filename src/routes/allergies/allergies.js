@@ -8,9 +8,9 @@ const router = express.Router()
 
 router.get('/', async (req, res, next) => {
   const allergies = listAllergies()
-  res.send({
-    allergies
-  })
+  res.responseValue = allergies
+  console.log(res.responseValue)
+  next()
 })
 
 router.get('/query', async (req, res, next) => {
@@ -29,7 +29,8 @@ router.get('/query', async (req, res, next) => {
     }
 
     const allergy = getAllergyByCodeOrName(allergyCode)
-    res.send(allergy)
+    res.responseValue = allergy
+    next()
 
   } catch (error) {
     if(error instanceof RangeError) {
