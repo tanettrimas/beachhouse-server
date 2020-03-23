@@ -12,6 +12,7 @@ const formatResponse = require('./routes/middlewares/formatResponse')
 
 app.use((req, res, next) => {
   req.requestId = uuid()
+  res.set('x-request-id', req.requestId)
   next()
 })
 app.use(helmet())
@@ -37,8 +38,6 @@ app.use((err, req, res, next) => {
   if(err instanceof SyntaxError) {
     res.status(400)
   }
-  res.set('x-request-id', req.requestId)
-
   res.send({
     method: req.method,
     requestId: req.requestId,
