@@ -7,7 +7,6 @@ const app = express()
 
 const menuRouter = require('./routes/menu')
 const allergyRouter = require('./routes/allergies')
-const sandboxRouter = require('./routes/sandbox')
 const formatResponse = require('./routes/middlewares/formatResponse')
 
 app.use((req, res, next) => {
@@ -22,10 +21,6 @@ app.use(logger('dev'))
 
 app.use('/menu', menuRouter, formatResponse)
 app.use('/allergies', allergyRouter, formatResponse)
-
-// Only for testing, remove before prod
-app.use('/sandbox', sandboxRouter, formatResponse)
-
 app.use((req, res, next) => {
   const error = new Error('Route not found')
   res.status(404)
