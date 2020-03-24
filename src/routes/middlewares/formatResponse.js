@@ -20,8 +20,7 @@ const formatResponse = (req, res, next) => {
       requestId: req.requestId,
       status: res.statusCode,
       message: 'Response successful!', 
-      data: res.responseValue,
-      length: (typeof res.responseValue !== 'string' && res.responseValue.length ) || null
+      data: res.responseValue
     })
   } catch (error) {
     res.status(400)

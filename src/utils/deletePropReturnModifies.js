@@ -4,9 +4,9 @@ function deletePropAndReturnModified(prop, obj = {}) {
   }
   if(returnObject[prop]) {
     delete returnObject[prop]
-    return returnObject
+    return Object.freeze(returnObject)
   }
-  return false
+  return Object.freeze(returnObject)
 }
 
 module.exports = deletePropAndReturnModified

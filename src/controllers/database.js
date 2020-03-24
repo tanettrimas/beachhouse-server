@@ -14,7 +14,11 @@ const makeCreateDatabaseController = ({ db, objectId }) => (tableName) => {
   async function checkIfUserExists(username) {
     const database = await db()
     const user = await database.collection(tableName).findOne({ username }) 
-    return user ? true : false
+    if(user) {
+      const { _id, ...existingInfo } = user
+      return Object.freeze({ id: `${_id}`, ...existingInfo })
+    }
+    return false
   }
 
   async function findById(id) {

@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const checkAuth = require('../middlewares/auth/checkAuth')
+
 const createController = require('../utils/setup')
 const createMenuController = require('../../controllers/menu')
 const { validate, makeBuildValidator, createValidator } = require('../middlewares/validation')
@@ -11,6 +13,7 @@ const stringValidate = createValidator.makeStringValidate(check)
 const numberValidate = createValidator.makeNumberValidate(check)
 const arrayValidate = createValidator.makeArrayValidate(check)
 const menuController = createController('menu', createMenuController)
+
 router.get("/", async (req, res, next) => {
   try {
     const items = await menuController.listMenuItems()
@@ -22,7 +25,7 @@ router.get("/", async (req, res, next) => {
   }
 })
 
-router.post('/new', validate([
+router.post('/new', checkAuth(), validate([
   stringValidate({ field: 'title' }),
   stringValidate({ field: 'category' }),
   numberValidate({ field: 'price', isFloat: true }),
@@ -49,7 +52,7 @@ router.post('/new', validate([
 })
 
 
-router.put('/:id', validate([
+router.put('/:id', checkAuth(), validate([
   stringValidate({ field: 'title', minLength: 3, optional: true }),
   stringValidate({ field: 'category', minLength: 3, optional: true }),
   numberValidate({ field: 'price', isFloat: true, optional: true }),
@@ -92,7 +95,7 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', checkAuth(), async (req, res, next) => {
   try {
     const deleted = await menuController.deleteMenuItem(req.params.id)
     if(deleted) {

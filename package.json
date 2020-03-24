@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
     "helmet": "^3.21.3",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.5",
     "morgan": "^1.9.1",
     "uuid": "^7.0.2"

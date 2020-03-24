@@ -34,10 +34,12 @@ app.use((err, req, res, next) => {
   // TODO: Add logging to data pool?
   res.status(res.statusCode === 200 ? 500 : res.statusCode)
   if(err instanceof SyntaxError) {
+    console.log(err)
     res.status(400)
+    err = new Error('Could not process request due to malformed payload')
   }
 
-  if (err instanceof TypeError) {
+  if (err instanceof TypeError || err instanceof ReferenceError) {
     //Here you can log before showing generic error message to user
     console.log(err)
     res.status(500)
