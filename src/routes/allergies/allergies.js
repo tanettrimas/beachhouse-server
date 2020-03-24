@@ -9,7 +9,6 @@ const router = express.Router()
 router.get('/', async (req, res, next) => {
   const allergies = listAllergies()
   res.responseValue = allergies
-  console.log(res.responseValue)
   next()
 })
 
